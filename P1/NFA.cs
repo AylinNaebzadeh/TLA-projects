@@ -7,6 +7,11 @@ namespace P1
 {
     public class NFA
     {
+        public enum Constants
+        {
+            Landa = '$',
+            None = '\0'
+        }
         public List<string> States = new List<string>();
         public List<char> Alphabets = new List<char>();
         public List<Transition> Transitions = new List<Transition>();
@@ -35,7 +40,7 @@ namespace P1
         {
             return States.Contains(transition.startState) &&
                     States.Contains(transition.endState) &&
-                    Alphabets.Contains(transition.Symbol);
+                    (Alphabets.Contains(transition.Symbol) || transition.Symbol == (char)Constants.Landa);
         }
         private void AddInitialState(string state)
         {
@@ -53,38 +58,40 @@ namespace P1
         }
         public string isAccepted(string input)
         {
-            if (Accept(initialState, input, new StringBuilder()))
+            if (Accept(initialState, input))
             {
                 return "Accepted";
             }
             return "Rejected";
         }
 
-        private bool Accept(string currentState, string input, StringBuilder steps)
+        private bool Accept(string currentState, string input)
         {
-            if (input.Length > 0)
+            bool result = false;
+            if (input.Length == 0)
             {
-                var transitions = GetAllTransitions(currentState, input[0]);
-                foreach (var t in transitions)
+                if (finalStates.Contains(currentState))
                 {
-                    var currentStep = new StringBuilder(steps.ToString() + t);
-                    if (Accept(t.endState, input.Substring(1), currentStep))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
                 return false;
             }
-            if (finalStates.Contains(currentState))
+            else if (input.Length > 0)
             {
-                return true;
+                foreach (var t in Transitions)
+                {
+                    if (t.startState == currentState && t.Symbol == input[0] && result == false)
+                    {
+                        result = Accept(t.endState, input.Substring(1));
+                    }
+                    else if (t.startState == currentState && t.Symbol == (char)Constants.Landa && result == false)
+                    {
+                        result = Accept(t.endState, input);
+                    }
+                }   
+                return result;
             }
-            return false;
-        }
-
-        private List<Transition> GetAllTransitions(string currentState, char symbol)
-        {
-            return Transitions.FindAll( t => t.startState == currentState && t.Symbol == symbol);
+            return result;
         }
     }
 }
