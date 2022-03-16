@@ -14,7 +14,7 @@ namespace P1
 {
     public class NFAtoDFA
     {
-        public List<int> delete(List<int> states, string var, 
+        public static List<int> delete(List<int> states, string var, 
                                 List<Dictionary<string, List<int>>> nfaTransitions)
         {
             List<List<int>> newSetOfNodes = new List<List<int>>();
@@ -29,7 +29,7 @@ namespace P1
             return union(newSetOfNodes);
         }
 
-        private List<int> union(List<List<int>> states)
+        private static List<int> union(List<List<int>> states)
         {
             List<int> set = new List<int>();
             for (int i = 0; i < states.Count; i++)
@@ -45,7 +45,7 @@ namespace P1
             }
             return set;
         }
-        private List<int> eClosure(int state, 
+        private static List<int> eClosure(int state, 
                     List<Dictionary<string, List<int>>> nfaTransitions)
         {
             List<int> set = new List<int>();
@@ -69,7 +69,7 @@ namespace P1
             }
             return set;
         }
-        private List<int> eClosureList(List<int> states, 
+        private static List<int> eClosureList(List<int> states, 
                     List<Dictionary<string, List<int>>> nfaTransitions)
         {
             List<List<int>> combinedNodes = new List<List<int>>();
@@ -79,7 +79,7 @@ namespace P1
             }
             return union(combinedNodes);
         }
-        private int isNewNodeNew(List<int> newNodes, List<List<int>> dfaNodes)
+        private static int isNewNodeNew(List<int> newNodes, List<List<int>> dfaNodes)
         {
             newNodes.Sort();
             for (int i = 0; i < dfaNodes.Count; i++)
@@ -93,7 +93,7 @@ namespace P1
             }
             return -1;
         }
-        public void ConvertNFAtoDFA(int nfaCount, int varCount, 
+        public int ConvertNFAtoDFA(int nfaCount, int varCount, 
                                             List<int> nfaNodes, List<string> variables, 
                                             int nfaInitialNode, List<int> nfaFinalNodes,
                                             List<Dictionary<string, List<int>>> nfaTransitions)
@@ -139,6 +139,7 @@ namespace P1
                     }
                 }
             }
+            return dfaCount;
         }
     }
 }
