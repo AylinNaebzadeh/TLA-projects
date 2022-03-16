@@ -1,18 +1,26 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+/*
+    I will change every node to an integer 
+    For example:
+        q0 -> 0
+        q1 -> 1
+        q2 -> 2
+        ...
+*/
 
 namespace P1
 {
     public class NFAtoDFA
     {
-        public ArrayList delete(ArrayList nodes, string var, 
-                                List<Dictionary<string, ArrayList>> nfaTransitions)
+        public List<int> delete(List<int> states, string var, 
+                                List<Dictionary<string, List<int>>> nfaTransitions)
         {
-            ArrayList newSetOfNodes = new ArrayList();
-            for (long i = 0; i < nodes.Count; i++)
+            List<List<int>> newSetOfNodes = new List<List<int>>();
+            for (int i = 0; i < states.Count; i++)
             {
-                Dictionary<string, ArrayList> tmp = nfaTransitions[(int)nodes[(int)i]];
+                Dictionary<string, List<int>> tmp = nfaTransitions[states[i]];
                 if (tmp.ContainsKey(var))
                 {
                     newSetOfNodes.Add(tmp[var]);
@@ -21,34 +29,34 @@ namespace P1
             return union(newSetOfNodes);
         }
 
-        private ArrayList union(ArrayList nodes)
+        private List<int> union(List<List<int>> states)
         {
-            ArrayList set = new ArrayList();
-            for (long i = 0; i < nodes.Count; i++)
+            List<int> set = new List<int>();
+            for (int i = 0; i < states.Count; i++)
             {
-                ArrayList tmp = (ArrayList)nodes[(int)i];
-                for (long j = 0; j < tmp.Count; j++)
+                List<int> tmp = states[i];
+                for (int j = 0; j < tmp.Count; j++)
                 {
-                    if (!set.Contains(tmp[(int)j]))
+                    if (!set.Contains(tmp[j]))
                     {
-                        set.Add(tmp[(int)j]);
+                        set.Add(tmp[j]);
                     }
                 }
             }
             return set;
         }
-        private ArrayList eClosure(int node, 
-                    List<Dictionary<string, ArrayList>> nfaTransitions)
+        private List<int> eClosure(int state, 
+                    List<Dictionary<string, List<int>>> nfaTransitions)
         {
-            ArrayList set = new ArrayList();
-            set.Add(node);
+            List<int> set = new List<int>();
+            set.Add(state);
             int i = 0;
             while (i < set.Count)
             {
-                Dictionary<string, ArrayList> tmp = nfaTransitions[(int)set[i]];
+                Dictionary<string, List<int>> tmp = nfaTransitions[set[i]];
                 if (tmp.ContainsKey("$"))
                 {
-                    ArrayList al = tmp["$"];
+                    List<int> al = tmp["$"];
                     for (int j = 0; j < al.Count; j++)
                     {
                         if (!set.Contains(al[j]))
@@ -61,22 +69,22 @@ namespace P1
             }
             return set;
         }
-        private ArrayList eClosureList(ArrayList nodes, 
-                    List<Dictionary<string, ArrayList>> nfaTransitions)
+        private List<int> eClosureList(List<int> states, 
+                    List<Dictionary<string, List<int>>> nfaTransitions)
         {
-            ArrayList combinedNodes = new ArrayList();
-            for (int i = 0; i < nodes.Count; i++)
+            List<List<int>> combinedNodes = new List<List<int>>();
+            for (int i = 0; i < states.Count; i++)
             {
-                combinedNodes.Add(eClosure((int)nodes[i], nfaTransitions));
+                combinedNodes.Add(eClosure(states[i], nfaTransitions));
             }
             return union(combinedNodes);
         }
-        private int isNewNodeNew(ArrayList newNodes, ArrayList dfaNodes)
+        private int isNewNodeNew(List<int> newNodes, List<List<int>> dfaNodes)
         {
             newNodes.Sort();
             for (int i = 0; i < dfaNodes.Count; i++)
             {
-                ArrayList tmp = (ArrayList)dfaNodes[i];
+                List<int> tmp = dfaNodes[i];
                 tmp.Sort();
                 if (newNodes.Equals(tmp))
                 {
@@ -85,7 +93,52 @@ namespace P1
             }
             return -1;
         }
-        public static void ConvertNFAtoDFA()
-        {}
+        public void ConvertNFAtoDFA(int nfaCount, int varCount, 
+                                            List<int> nfaNodes, List<string> variables, 
+                                            int nfaInitialNode, List<int> nfaFinalNodes,
+                                            List<Dictionary<string, List<int>>> nfaTransitions)
+        {
+            List<List<int>> dfaNodes = new List<List<int>>();
+            List<Dictionary<string, int>> dfaTransitions = new List<Dictionary<string, int>>();
+            List<int> dfaFinalNodes = new List<int>();
+            int dfaCount = 0;
+            List<int> firstDFAnode = eClosure(nfaInitialNode, nfaTransitions);
+            dfaNodes.Add(firstDFAnode);
+            dfaCount++;
+            int j = 0;
+            while (j < dfaCount)
+            {
+                Dictionary<string, int> newNodeDict = new Dictionary<string, int>();
+                for (int i = 0; i < varCount; i++)
+                {
+                    List<int> newNode = eClosureList(delete(dfaNodes[j], variables[i], nfaTransitions), nfaTransitions);
+                    int nodePointingTo = isNewNodeNew(newNode, dfaNodes);
+                    if (nodePointingTo == -1)
+                    {
+                        dfaNodes.Add(newNode);
+                        newNodeDict.Add((string)variables[i], dfaCount);
+                        dfaCount++;
+                    }
+                    else
+                    {
+                        newNodeDict.Add((string)variables[i], nodePointingTo);
+                    }
+                    dfaTransitions.Add(newNodeDict);
+                    j++;
+                }
+            }
+            for (int i = 0; i < nfaFinalNodes.Count; i++)
+            {
+                for (int k = 0; k < dfaNodes.Count; k++)
+                {
+                    List<int> tmp = dfaNodes[k];
+                    if (tmp.Contains(nfaFinalNodes[i]))
+                    {
+                        dfaFinalNodes.Add(k);
+                        continue;
+                    }
+                }
+            }
+        }
     }
 }

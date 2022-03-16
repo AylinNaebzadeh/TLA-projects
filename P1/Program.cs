@@ -8,6 +8,9 @@ namespace P1
     {
         static void Main(string[] args)
         {
+            /*
+                The first part is to check whether a string is accepted by finite automata or not
+            */
             var states = Console.ReadLine().Split(',', '{', '}').Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
             var sigma = Console.ReadLine().Split(',', '{', '}').Where(x => !string.IsNullOrWhiteSpace(x)).Select(item =>  char.Parse(item)).ToList();
             var final = Console.ReadLine().Split(',', '{', '}').Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
@@ -22,6 +25,11 @@ namespace P1
 
             NFA nfa = new NFA(states, sigma, Delta, states[0], final);
             System.Console.WriteLine(nfa.isAccepted(input));
+            /*
+                The second part is to find the equivalent DFA of an NFA, and print the number of DFA states
+            */
+            
+            
         }
     }
 }
