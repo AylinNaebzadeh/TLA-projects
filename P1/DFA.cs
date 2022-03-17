@@ -1,4 +1,0 @@
-namespace P1
-{
-    
-}
