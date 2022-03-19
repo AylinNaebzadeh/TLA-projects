@@ -6,8 +6,8 @@ namespace P1_Q2
     {
         public List<State> states {get; set;}
         public List<Transition> transitions {get; set;}
-        public string[] symbols {get; set;}
-        public NFAtoDFA(List<State> _states, List<Transition> _transitions, string[] _symbols)
+        public List<char> symbols {get; set;}
+        public NFAtoDFA(List<State> _states, List<Transition> _transitions, List<char> _symbols)
         {
             states = _states;
             transitions = _transitions;
@@ -37,7 +37,7 @@ namespace P1_Q2
             {
                 for (int j = 0; j < states[i].transitions.Count; j++)
                 {
-                    if (states[i].transitions[j].symbol == "$")
+                    if (states[i].transitions[j].symbol == '$')
                     {
                         states[i].name = states[i].name + " " + states[i].transitions[j].end.name;
                     }
@@ -50,7 +50,7 @@ namespace P1_Q2
             {
                 for (int j = states[i].transitions.Count - 1; j >= 0; j--)
                 {
-                    if (states[i].transitions[j].symbol == "$")
+                    if (states[i].transitions[j].symbol == '$')
                     {
                         states[i].transitions.Remove(states[i].transitions[j]);
                     }
@@ -63,7 +63,7 @@ namespace P1_Q2
 
             for (int i = 0; i < DFA.Count; i++)
             {
-                for (int j = 0; j < symbols.Length; j++)
+                for (int j = 0; j < symbols.Count; j++)
                 {
                     State tmp = new State();
                     tmp.isFinal = false;
@@ -77,7 +77,7 @@ namespace P1_Q2
                         {
                             for (int n = 0; n < newStates[m].transitions.Count; n++)
                             {
-                                if (newStates[m].name ==  statesName[k] && newStates[m].transitions[n].symbol == symbols[j])
+                                if (newStates[m].name ==  statesName[k] && (char)newStates[m].transitions[n].symbol == symbols[j])
                                 {
                                     newAdjStates.Add(newStates[m].transitions[n].end);
                                 }
