@@ -48,7 +48,7 @@ namespace P1
             }
             for (int i = 0; i < transitionsCount; i++)
             {
-                var t = Console.ReadLine().Split(',', 'q').ToList();
+                var t = Console.ReadLine().Split(',', 'q').Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
                 if (!nfaTransitions[int.Parse(t[0])].ContainsKey(t[1]))
                 {
                     nfaTransitions[int.Parse(t[0])][t[1]] = new List<int>();
