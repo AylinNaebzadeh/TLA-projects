@@ -25,9 +25,10 @@ namespace P1_Q2
                 for (int j = 0; j < states[i].transitions.Count; j++)
                 {
                     Transition tmpTr = new Transition();
-                    tmpTr.start = states[i].transitions[i].start;
-                    tmpTr.end = states[i].transitions[i].end;
-                    tmpTr.symbol = states[i].transitions[i].symbol;
+                    tmpTr.start = states[i].transitions[j].start;
+                    tmpTr.end = states[i].transitions[j].end;
+                    tmpTr.symbol = states[i].transitions[j].symbol;
+                    tmpState.transitions.Add(tmpTr);
                 }
                 tmpState.name = states[i].name;
                 newStates.Add(tmpState);
@@ -46,7 +47,7 @@ namespace P1_Q2
                 states[i].name = states[i].name.Trim();
             }
 
-            for (int i = states.Count - 1; i >= 0; i++)
+            for (int i = states.Count - 1; i >= 0; i--)
             {
                 for (int j = states[i].transitions.Count - 1; j >= 0; j--)
                 {
