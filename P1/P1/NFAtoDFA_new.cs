@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 
 namespace P1_Q2
 {
@@ -43,7 +44,7 @@ namespace P1_Q2
                         states[i].name = states[i].name + " " + states[i].transitions[j].end.name;
                     }
                 }
-                /* Is it neccesary? */
+
                 states[i].name = states[i].name.Trim();
             }
 
@@ -88,7 +89,7 @@ namespace P1_Q2
                     string newName = "";
                     for (int k = 0; k < newAdjStates.Count; k++)
                     {
-                        newName += " " + newAdjStates[k].name;
+                        newName = newName + " " + newAdjStates[k].name;
                     }
                     for (int k = 0; k < newAdjStates.Count; k++)
                     {
@@ -128,7 +129,47 @@ namespace P1_Q2
                     }
                 }
             }
-            return DFA.Count;
+            return removeDuplicates(DFA);
         } 
+        public int removeDuplicates(List<State> DFA)
+        {
+            /* Key --> initial state, Value --> list of all transition */
+            Dictionary<string, List<string>> resDFA = new Dictionary<string, List<string>>();
+            StringBuilder sb;
+            for (int i = 0; i < DFA.Count; i++)
+            {
+                for (int j = 0; j < DFA[i].transitions.Count; j++)
+                {
+                    sb = new StringBuilder();
+                    string source = DFA[i].transitions[j].start.name.Trim();
+                    string dest = DFA[i].transitions[j].end.name.Trim();
+                    char symbol = DFA[i].transitions[j].symbol;
+                    if (source == "" || source == null)
+                    {
+                        source = "Trap";
+                    }
+                    if (dest == "" || dest == null)
+                    {
+                        dest = "Trap";
+                    }
+                    sb.Append($"{source} + {symbol} + {dest}");
+                    if (resDFA.ContainsKey(source.Trim()))
+                    {
+                        List<string> list = resDFA[source];
+                        if (!list.Contains(sb.ToString()) && sb.ToString() != "")
+                        {
+                            list.Add(sb.ToString());
+                        }
+                    }
+                    else
+                    {
+                        List<string> list = new List<string>();
+                        list.Add(sb.ToString());
+                        resDFA.Add(source.Trim(), list);
+                    }
+                }
+            }
+            return resDFA.Keys.Count;
+        }
     }
 }
