@@ -122,7 +122,7 @@ namespace P1_Q3
     }
     class Program
     {
-        static void Main(string[] args)
+        static void Q3_Main(string[] args)
         {
             /*
                 The third part is to determine the number of states of  a minimized dfa
