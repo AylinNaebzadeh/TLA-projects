@@ -6,7 +6,7 @@ namespace P1_Q1
 {
     class Program
     {
-        static void Main_Q1(string[] args)
+        static void Q1_Main(string[] args)
         {
             /*
                 The first part is to check whether a string is accepted by finite automata or not
