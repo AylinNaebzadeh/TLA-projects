@@ -7,7 +7,7 @@ namespace P1_Q2
     
     class Program
     {
-        static void Main(string[] args)
+        static void Main_Q2(string[] args)
         {
             List<State> NFA = new List<State>();
             List<Transition> transitions = new List<Transition>();
