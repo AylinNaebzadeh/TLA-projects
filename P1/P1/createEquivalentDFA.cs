@@ -31,7 +31,7 @@ namespace P1_Q2
 
             for (int i = 0; i < transitionCount; i++)
             {
-                var transition = Console.ReadLine().Split(",");
+                var transition = Console.ReadLine().Split(',');
                 string firstState = transition[0];
                 string nextState = transition[2];
                 string symbol = transition[1];
@@ -105,7 +105,7 @@ namespace P1_Q2
             List<List<string>> statesList = new List<List<string>>();
             statesList.Add(startStatesList);
 
-            List<(List<string>, char, List<string>)> transitionsList = new List<(List<string>, char, List<string>)>();
+            List<Tuple<List<string>, char, List<string>>> transitionsList = new List<Tuple<List<string>, char, List<string>>>();
 
             for (int i = 0; i < statesList.Count; i++)
             {
@@ -139,33 +139,17 @@ namespace P1_Q2
                     }
                     newState.Sort();
 
-                    var transition = (item, alphabet, newState);
+                    var transition = Tuple.Create(item, alphabet, newState);
 
                     if (newState.Count != 0)
                     {
                         transitionsList.Add(transition);
                     }
 
-                    if (newState.Count != 0)
+                    if (newState.Count != 0 && !statesList.Any(list => list.SequenceEqual(newState)))
                     {
-                        for (int j = 0; j < statesList.Count; j++)
-                        {
-                            var list = statesList[j];
-                            if (list.SequenceEqual(newState))
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                statesList.Add(newState);
-                            }
-                        }
+                        statesList.Add(newState);
                     }
-
-                    // if (!statesList.Contains(newState) && newState.Count != 0)
-                    // {
-                    //     statesList.Add(newState);
-                    // }
                 }
             }
 
@@ -184,8 +168,13 @@ namespace P1_Q2
                     }
                 }
             }
-            return statesList.Count;
+            int result = statesList.Count;
+            if (transitionsList.Count != statesList.Count * 2)
+            {
+                result += 1;
+                statesList.Add(new List<string>{"Trap"});
+            }
+            return result;
         }
     }
-
 }
