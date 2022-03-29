@@ -11,7 +11,10 @@ namespace P1_Q2
             var states = Console.ReadLine().Split(',', '{', '}').Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 
             var alphabets = Console.ReadLine().Split(',', '{', '}').Where(x => !string.IsNullOrWhiteSpace(x)).Select(item =>  char.Parse(item)).ToList();
-
+            /*
+                The format of the below dictionary will be like this:
+                    q0_a : [], q0_b : [], q0_$ : [], q1_a : [], q1_b : [], q1_$ : [], ...
+            */
             Dictionary<string, List<string>> transitionMapping = new Dictionary<string, List<string>>();
             foreach (var state in states)
             {
@@ -21,6 +24,8 @@ namespace P1_Q2
                 }
                 transitionMapping[state + "_" + "$"] = new List<string>();
             }
+
+            var finalStates = Console.ReadLine().Split(',', '{', '}').Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 
             int transitionCount = Convert.ToInt32(Console.ReadLine());
 
@@ -40,7 +45,6 @@ namespace P1_Q2
                 }
             }
 
-            var finalStates = Console.ReadLine().Split(',', '{', '}').Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
 
             NFA newNFA = new NFA(states, finalStates, transitionMapping, alphabets);
             return newNFA;
@@ -72,14 +76,15 @@ namespace P1_Q2
         {
             List<string> checkState = new List<string>();
             List<string> possibleStates = new List<string>{state};
-
-            foreach (var item in possibleStates)
+            // var tmp
+            for (int i = 0; i < possibleStates.Count; i++)
             {
-                if (checkState.SequenceEqual(possibleStates))
-                {
-                    break;
-                }
-                var newStates = transitions[item + "_" + "&"];
+                var item = possibleStates[i];
+                // if (checkState.SequenceEqual(possibleStates))
+                // {
+                //     break;
+                // }
+                var newStates = transitions[item + "_" + "$"];
                 foreach (var newState in newStates)
                 {
                     if (!possibleStates.Contains(newState))
@@ -102,8 +107,9 @@ namespace P1_Q2
 
             List<(List<string>, char, List<string>)> transitionsList = new List<(List<string>, char, List<string>)>();
 
-            foreach (var item in statesList)
+            for (int i = 0; i < statesList.Count; i++)
             {
+                var item = statesList[i];
                 foreach (var alphabet in this.alphabets)
                 {
                     List<string> newState = new List<string>();
@@ -119,8 +125,9 @@ namespace P1_Q2
                         }
                     }
 
-                    foreach (var state in newState)
+                    for (int j = 0; j < newState.Count; j++)
                     {
+                        var state = newState[j];
                         List<string> lambdaStates = this.lambdaTransitions[state];
                         foreach (var innerState in lambdaStates)
                         {
@@ -139,10 +146,26 @@ namespace P1_Q2
                         transitionsList.Add(transition);
                     }
 
-                    if (!statesList.Contains(newState) && newState.Count != 0)
+                    if (newState.Count != 0)
                     {
-                        statesList.Add(newState);
+                        for (int j = 0; j < statesList.Count; j++)
+                        {
+                            var list = statesList[j];
+                            if (list.SequenceEqual(newState))
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                statesList.Add(newState);
+                            }
+                        }
                     }
+
+                    // if (!statesList.Contains(newState) && newState.Count != 0)
+                    // {
+                    //     statesList.Add(newState);
+                    // }
                 }
             }
 
