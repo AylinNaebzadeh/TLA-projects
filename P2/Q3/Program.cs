@@ -4,8 +4,6 @@ using System.Linq;
 
 namespace Q3
 {
-
-
     class Program
     {
         static void Main(string[] args)

@@ -63,10 +63,7 @@ namespace Q3
                         break;
                     }
                 }
-
-
             }
-
             return result;
         }
     }
